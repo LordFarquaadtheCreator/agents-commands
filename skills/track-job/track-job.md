@@ -7,7 +7,7 @@ Use this skill immediately after applying to any job.
 Use the `track-job.py` script to record job applications:
 
 ```bash
-python /Users/farquaad/agents-data/skills/track-job/track-job.py "<Job Posting URL>" "<email>" "<industry>" "<status>" [phone] [notes]
+/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "<Job Posting URL>" "<email>" "<industry>" "<status>" [phone] [notes]
 ```
 
 Parameters (in order):
