@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-import sys
 import json
 import re
-from datetime import datetime
-import urllib.request
+import sys
 import urllib.error
+import urllib.request
+from datetime import datetime
 
 VALID_INDUSTRIES = {"Tech", "Health Care", "Retail", "Finance", "Gig", "Other"}
 VALID_STATUSES = {
@@ -41,7 +41,9 @@ def validate_phone(phone):
 
 def validate_industry(industry):
     if industry not in VALID_INDUSTRIES:
-        raise ValueError(f"Industry must be one of: {', '.join(sorted(VALID_INDUSTRIES))}")
+        raise ValueError(
+            f"Industry must be one of: {', '.join(sorted(VALID_INDUSTRIES))}"
+        )
     return industry
 
 
@@ -87,13 +89,24 @@ def post_to_sheet(data):
 
 def main():
     if len(sys.argv) < 5:
-        print("Usage: track-job <link> <email> <industry> <status> [phone] [notes]", file=sys.stderr)
+        print(
+            "Usage: track-job <link> <email> <industry> <status> [phone] [notes]",
+            file=sys.stderr,
+        )
         print("\nRequired:", file=sys.stderr)
         print("  link     - Job posting URL", file=sys.stderr)
         print("  email    - Employer contact email", file=sys.stderr)
-        print("  industry - Tech, Health Care, Retail, Finance, Gig, Other", file=sys.stderr)
-        print("  status   - Not Started, Applied Only, Applied + Emailed, Applied + Called,", file=sys.stderr)
-        print("             Applied + Emailed + Called, Interview!, Done", file=sys.stderr)
+        print(
+            "  industry - Tech, Health Care, Retail, Finance, Gig, Other",
+            file=sys.stderr,
+        )
+        print(
+            "  status   - Not Started, Applied Only, Applied + Emailed, Applied + Called,",
+            file=sys.stderr,
+        )
+        print(
+            "             Applied + Emailed + Called, Interview!, Done", file=sys.stderr
+        )
         print("\nOptional:", file=sys.stderr)
         print("  phone    - Contact phone number", file=sys.stderr)
         print("  notes    - Free-form notes", file=sys.stderr)
@@ -103,8 +116,8 @@ def main():
     email = validate_email(sys.argv[2])
     industry = sys.argv[3]
     status = sys.argv[4]
-    phone = sys.argv[5] if len(sys.argv) > 5 else None
-    notes = sys.argv[6] if len(sys.argv) > 6 else None
+    phone = sys.argv[5] if len(sys.argv) > 5 else ""
+    notes = sys.argv[6] if len(sys.argv) > 6 else ""
 
     if phone:
         phone = validate_phone(phone)
