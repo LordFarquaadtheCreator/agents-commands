@@ -95,22 +95,19 @@ def main():
             file=sys.stderr,
         )
         print("\nRequired:", file=sys.stderr)
-        print("  link     - Job posting URL", file=sys.stderr)
+        print("\tlink: Job posting URL", file=sys.stderr)
         print(
-            "  industry - Tech, Health Care, Retail, Finance, Gig, Other",
+            "\tindustry: Tech, Health Care, Retail, Finance, Gig, Other",
             file=sys.stderr,
         )
         print(
-            "  status   - Not Started, Applied Only, Applied + Emailed, Applied + Called,",
+            "\tstatus: Not Started, Applied Only, Applied + Emailed, Applied + Called, Applied + Emailed + Called, Interview!, Done",
             file=sys.stderr,
-        )
-        print(
-            "             Applied + Emailed + Called, Interview!, Done", file=sys.stderr
         )
         print("\nOptional:", file=sys.stderr)
-        print("  email    - Employer contact email", file=sys.stderr)
-        print("  phone    - Contact phone number", file=sys.stderr)
-        print("  notes    - Free-form notes", file=sys.stderr)
+        print("\temail: Employer contact email", file=sys.stderr)
+        print("\tphone: Contact phone number", file=sys.stderr)
+        print("\tnotes: Free-form notes", file=sys.stderr)
         return 1
 
     link = validate_url(sys.argv[1])
