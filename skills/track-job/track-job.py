@@ -16,7 +16,7 @@ VALID_STATUSES = {
     "Interview!",
     "Done",
 }
-SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSH-qF-VA-XZEaMUAVsCV_RC6370a6DA7XRIlf9LYAY1Ja84sBO94rH6Vq0tbU3q67XQ/exec"
+SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5PFyxIoe4KutrXMAlzQKYEa-gabA4EWslhxHaUN-_M0Aag4NA3i8NNz5fZ_tjydvbeg/exec"
 
 
 # Validation
@@ -31,18 +31,21 @@ def validate_optional_email(email):
     "@" and "." must exist somewhere in the email
     """
     if not email:
-        return email
+        return None
     if "@" not in email or "." not in email:
         raise ValueError("Email must be a valid email address")
     return email
 
 
 def validate_optional_phone(phone):
-    if phone:
-        digits = re.sub(r"[^\d]", "", phone)
-        if not (10 <= len(digits) <= 15):
-            raise ValueError("Phone number must be 10-15 digits")
-    return phone
+    if not phone:
+        return None
+
+    digits = re.sub(r"[^\d]", "", phone)
+    if not (10 <= len(digits) <= 15):
+        raise ValueError("Phone number must be 10-15 digits")
+
+    return digits
 
 
 def validate_industry(industry):
@@ -117,10 +120,10 @@ def main():
     phone = sys.argv[5] if len(sys.argv) > 5 else None
     notes = "".join(sys.argv[6:]) if len(sys.argv) > 6 else None
 
-    if email:
+    if email is not None:
         email = validate_optional_email(email)
 
-    if phone:
+    if phone is not None:
         phone = validate_optional_phone(phone)
 
     industry = validate_industry(industry)
