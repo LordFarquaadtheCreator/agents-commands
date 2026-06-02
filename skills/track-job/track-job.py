@@ -19,6 +19,7 @@ VALID_STATUSES = {
 SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSH-qF-VA-XZEaMUAVsCV_RC6370a6DA7XRIlf9LYAY1Ja84sBO94rH6Vq0tbU3q67XQ/exec"
 
 
+# Validation
 def validate_url(url):
     if not url or not re.match(r"^https?://", url):
         raise ValueError("Link must be a valid URL starting with http:// or https://")
@@ -26,6 +27,9 @@ def validate_url(url):
 
 
 def validate_optional_email(email):
+    """
+    "@" and "." must exist somewhere in the email
+    """
     if not email:
         return email
     if "@" not in email or "." not in email:
@@ -55,6 +59,7 @@ def validate_status(status):
     return status
 
 
+# CRUD Methods (Google Appscripts Default)
 def post_to_sheet(data):
     body = json.dumps(data).encode("utf-8")
     req = urllib.request.Request(
@@ -81,6 +86,7 @@ def post_to_sheet(data):
         return 1
 
 
+# Entry
 def main():
     if len(sys.argv) < 5:
         print(
