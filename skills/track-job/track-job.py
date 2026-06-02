@@ -57,10 +57,12 @@ def validate_industry(industry):
 
 
 def validate_status(status):
-    # TODO: case sensitivity
-    if status not in VALID_STATUSES:
-        raise ValueError(f"Status must be one of: {', '.join(sorted(VALID_STATUSES))}")
-    return status
+    # Case-insensitive matching
+    status_lower = status.lower()
+    for valid_status in VALID_STATUSES:
+        if valid_status.lower() == status_lower:
+            return valid_status
+    raise ValueError(f"Status must be one of: {', '.join(sorted(VALID_STATUSES))}")
 
 
 # CRUD Method
