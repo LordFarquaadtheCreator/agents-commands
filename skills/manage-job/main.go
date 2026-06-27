@@ -12,6 +12,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 var validIndustries = map[string]bool{
@@ -34,6 +36,10 @@ func repoRoot() string {
 	return filepath.Dir(filepath.Dir(filepath.Dir(exe)))
 }
 
+type sheetsConfig struct {
+	DeploymentID string `yaml:"deploymentId"`
+}
+
 func loadScriptURL() string {
 	configPath := filepath.Join(repoRoot(), "config", "sheets-deployment.yaml")
 	data, err := os.ReadFile(configPath)
@@ -41,20 +47,16 @@ func loadScriptURL() string {
 		fmt.Fprintf(os.Stderr, "Error: cannot read config/sheets-deployment.yaml: %v\n", err)
 		os.Exit(1)
 	}
-	// Parse simple YAML: "deploymentId: <value>"
-	var deploymentID string
-	for _, line := range strings.Split(string(data), "\n") {
-		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "deploymentId:") {
-			deploymentID = strings.TrimSpace(strings.TrimPrefix(line, "deploymentId:"))
-			break
-		}
+	var cfg sheetsConfig
+	if err := yaml.Unmarshal(data, &cfg); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: invalid YAML: %v\n", err)
+		os.Exit(1)
 	}
-	if deploymentID == "" {
+	if cfg.DeploymentID == "" {
 		fmt.Fprintf(os.Stderr, "Error: deploymentId not found in config/sheets-deployment.yaml\n")
 		os.Exit(1)
 	}
-	return fmt.Sprintf("https://script.google.com/macros/s/%s/exec", deploymentID)
+	return fmt.Sprintf("https://script.google.com/macros/s/%s/exec", cfg.DeploymentID)
 }
 
 // postFollowRedirect handles Apps Script's 302 redirect on POST.
