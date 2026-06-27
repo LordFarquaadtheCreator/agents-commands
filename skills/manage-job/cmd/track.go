@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"manage-job/appscript"
+
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +49,7 @@ Optional args (in order):
 			entry["notes"] = strings.Join(args[6:], " ")
 		}
 
-		app := NewAppScript()
+		app := appscript.NewAppScript()
 		result, err := app.Create(entry)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

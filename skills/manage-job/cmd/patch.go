@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"manage-job/appscript"
+
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +49,7 @@ Uses matchBy to find the row, then applies the update fields.
 			os.Exit(1)
 		}
 
-		app := NewAppScript()
+		app := appscript.NewAppScript()
 		result, err := app.Patch(matchBy, update)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

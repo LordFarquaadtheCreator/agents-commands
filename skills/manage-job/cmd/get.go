@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"manage-job/appscript"
 	"net/url"
 	"os"
 
@@ -20,7 +21,7 @@ var GetCmd = &cobra.Command{
 			params.Set(args[i], args[i+1])
 		}
 
-		app := NewAppScript()
+		app := appscript.NewAppScript()
 		result, err := app.Get(params)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

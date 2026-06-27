@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"manage-job/appscript"
+
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +35,7 @@ Uses matchBy to find the row to delete.
 			os.Exit(1)
 		}
 
-		app := NewAppScript()
+		app := appscript.NewAppScript()
 		result, err := app.Delete(matchBy)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

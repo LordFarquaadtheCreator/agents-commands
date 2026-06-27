@@ -1,4 +1,4 @@
-package cmd
+package appscript
 
 import (
 	"bytes"
