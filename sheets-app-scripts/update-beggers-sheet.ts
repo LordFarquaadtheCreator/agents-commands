@@ -11,14 +11,14 @@ const COLUMNS = ["companyName", "link", "dateApplied", "industry", "phoneNumber"
 const VALID_ACTIONS = new Set(["create", "patch", "delete"]);
 
 const VALID_STATUSES = new Set([
-  "Not Started",
   "Applied Only",
   "Applied + Emailed",
   "Applied + Called",
   "Applied + Emailed + Called",
   "Interview!",
   "Got the Job!",
-  "Didn't Get It"
+  "Didn't Get It",
+  "Not Started"
 ]);
 
 const VALID_INDUSTRIES = new Set([

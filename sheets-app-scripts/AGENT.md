@@ -35,7 +35,7 @@ Content-Type: `application/json`
 }
 ```
 
-Valid statuses: `Not Started`, `Applied Only`, `Applied + Emailed`, `Applied + Called`, `Applied + Emailed + Called`, `Interview!`, `Got the Job!`, `Didn't Get It`
+Valid statuses: `Applied Only`, `Applied + Emailed`, `Applied + Called`, `Applied + Emailed + Called`, `Interview!`, `Got the Job!`, `Didn't Get It`, `Not Started`
 
 Valid industries: `Tech`, `Health Care`, `Retail`, `Finance`, `Gig`, `Other`
 

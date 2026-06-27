@@ -41,7 +41,6 @@ Use this immediately after applying to any job. Creates a new row in the spreads
    - `Gig`
    - `Other`
 4. **status** — Must be exactly one of these values (case-sensitive):
-   - `Not Started`
    - `Applied Only`
    - `Applied + Emailed`
    - `Applied + Called`
@@ -49,6 +48,7 @@ Use this immediately after applying to any job. Creates a new row in the spreads
    - `Interview!`
    - `Got the Job!`
    - `Didn't Get It`
+   - `Not Started`
 
 #### Optional parameters (in order, can be omitted)
 
