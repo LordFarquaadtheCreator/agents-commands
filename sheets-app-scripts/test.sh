@@ -5,7 +5,7 @@
 set -euo pipefail
 
 _REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DEPLOYMENT_ID=$(python3 -c "import json; print(json.load(open('$_REPO_ROOT/sheets-deployment.json'))['deploymentId'])")
+DEPLOYMENT_ID=$(python3 -c "import json; print(json.load(open('$_REPO_ROOT/config/sheets-deployment.json'))['deploymentId'])")
 BASE_URL="${1:-https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec}"
 TEST_COMPANY="__TEST_CORP_$(date +%s)__"
 PASS=0

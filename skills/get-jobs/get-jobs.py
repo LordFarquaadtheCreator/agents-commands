@@ -7,7 +7,7 @@ import urllib.error
 import urllib.request
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-with open(os.path.join(_REPO_ROOT, "sheets-deployment.json")) as f:
+with open(os.path.join(_REPO_ROOT, "config", "sheets-deployment.json")) as f:
     _config = json.load(f)
 SCRIPT_URL = f"https://script.google.com/macros/s/{_config['deploymentId']}/exec"
 REQUEST_TIMEOUT = 30
