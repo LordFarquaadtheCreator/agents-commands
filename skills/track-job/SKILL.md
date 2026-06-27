@@ -12,12 +12,13 @@ Use this skill immediately after applying to any job. If the command fails, you 
 Use the `track-job.py` script to record job applications:
 
 ```zsh
-/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py <Job Posting URL> <industry> <status> [email] [phone] [notes]
+/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py <companyName> <Job Posting URL> <industry> <status> [email] [phone] [notes]
 ```
 
 Parameters (in order):
+- **Company Name** — Name of the company
 - **Link** — URL of the job posting (this must be the link relating to the individual job application, this link is always attainable by searching through share buttons and copy link buttons)
-- **Industry** — values in teh set of: Tech, Health Care, Retail, Finance, Gig, Other.
+- **Industry** — values in the set of: Tech, Health Care, Retail, Finance, Gig, Other.
 - **Status** — values in the set of: Not Started, Applied Only, Applied + Emailed, Applied + Called, Applied + Emailed + Called, Interview!, Done.
 - **Email** — Employer contact email (optional)
 - **Phone** — Contact phone number (optional).
@@ -29,15 +30,15 @@ Parameters (in order):
 
 *No optional parameters passed*
 ```zsh
-/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started"
+/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started"
 ```
 
 *Some optional parameters passed*
 ```zsh
-/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com"
+/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com"
 ```
 
 *All optional parameters passed*
 ```zsh
-/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234" "They said to email \"John\" at \"john@company.com\""
+/Users/farquaad/.pyenv/shims/python3 /Users/farquaad/agents-data/skills/track-job/track-job.py "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234" "They said to email \"John\" at \"john@company.com\""
 ```

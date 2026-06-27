@@ -16,7 +16,7 @@ VALID_STATUSES = {
     "Interview!",
     "Done",
 }
-SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5PFyxIoe4KutrXMAlzQKYEa-gabA4EWslhxHaUN-_M0Aag4NA3i8NNz5fZ_tjydvbeg/exec"
+SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRQ52XCi5htaaHLO1Laizu8-pyYFKI0GEWELSnJHsP1CBDc-9OxNlkWGhlG-8l8tDxIQ/exec"
 
 
 # Validation
@@ -66,6 +66,11 @@ def validate_status(status):
 
 
 # CRUD Method
+class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def post_to_sheet(data):
     body = json.dumps(data).encode("utf-8")
     req = urllib.request.Request(
@@ -75,23 +80,29 @@ def post_to_sheet(data):
         method="POST",
     )
 
+    opener = urllib.request.build_opener(NoRedirectHandler)
+
     try:
-        with urllib.request.urlopen(req) as response:
+        opener.open(req)
+        print("Error: expected redirect, got none", file=sys.stderr)
+        return 1
+    except urllib.error.HTTPError as e:
+        if e.code != 302:
+            print(f"Error: HTTP {e.code} - {e.reason}", file=sys.stderr)
+            return 1
+        location = e.headers.get("Location")
+        if not location:
+            print("Error: no redirect Location header", file=sys.stderr)
+            return 1
+
+        # GET the redirect URL to get the actual response
+        with urllib.request.urlopen(location) as response:
             result = response.read().decode("utf-8")
-
-            if "error" in result:
-                print(f"Fail: {result}")
+            if '"error"' in result:
+                print(f"Fail: {result}", file=sys.stderr)
                 return 1
-
             print(f"Success: {result}")
             return 0
-    except urllib.error.HTTPError as e:
-        print(f"Error: HTTP {e.code} - {e.reason}", file=sys.stderr)
-        print(f"Response: {e.read().decode('utf-8')}", file=sys.stderr)
-        return 1
-    except urllib.error.URLError as e:
-        print(f"Error: {e.reason}", file=sys.stderr)
-        return 1
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -99,12 +110,13 @@ def post_to_sheet(data):
 
 # Entry
 def main():
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         print(
-            "Usage: track-job <link> <industry> <status> [email] [phone] [notes]",
+            "Usage: track-job <companyName> <link> <industry> <status> [email] [phone] [notes]",
             file=sys.stderr,
         )
         print("\nRequired:", file=sys.stderr)
+        print("\tcompanyName: Company name", file=sys.stderr)
         print("\tlink: Job posting URL", file=sys.stderr)
         print(
             "\tindustry: Tech, Health Care, Retail, Finance, Gig, Other",
@@ -120,12 +132,13 @@ def main():
         print("\tnotes: Free-form notes", file=sys.stderr)
         return 1
 
-    link = validate_url(sys.argv[1])
-    industry = sys.argv[2]
-    status = sys.argv[3]
-    email = sys.argv[4] if len(sys.argv) > 4 else None
-    phone = sys.argv[5] if len(sys.argv) > 5 else None
-    notes = "".join(sys.argv[6:]) if len(sys.argv) > 6 else None
+    company_name = sys.argv[1]
+    link = validate_url(sys.argv[2])
+    industry = sys.argv[3]
+    status = sys.argv[4]
+    email = sys.argv[5] if len(sys.argv) > 5 else None
+    phone = sys.argv[6] if len(sys.argv) > 6 else None
+    notes = "".join(sys.argv[7:]) if len(sys.argv) > 7 else None
 
     if email is not None:
         email = validate_optional_email(email)
@@ -139,6 +152,8 @@ def main():
     today = datetime.now().strftime("%Y-%m-%d")
 
     data = {
+        "action": "create",
+        "companyName": company_name,
         "link": link,
         "dateApplied": today,
         "industry": industry,
