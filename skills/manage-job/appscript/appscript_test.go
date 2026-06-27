@@ -60,7 +60,7 @@ func TestGet(t *testing.T) {
 		w.Write([]byte(`{"status":"success","rows":[{"companyName":"Acme"}]}`))
 	})
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	params := url.Values{}
 	params.Set("industry", "Tech")
 
@@ -81,7 +81,7 @@ func TestGet(t *testing.T) {
 func TestGet_NoParams(t *testing.T) {
 	server := mockAppsScript(t, nil)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	result, err := app.Get(nil)
 	if err != nil {
 		t.Fatalf("Get failed: %v", err)
@@ -94,7 +94,7 @@ func TestGet_NoParams(t *testing.T) {
 func TestCreate(t *testing.T) {
 	server := mockAppsScript(t, nil)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	entry := map[string]interface{}{
 		"companyName": "Acme Corp",
 		"link":        "https://example.com/job",
@@ -122,7 +122,7 @@ func TestCreate(t *testing.T) {
 func TestPatch(t *testing.T) {
 	server := mockAppsScript(t, nil)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	matchBy := map[string]interface{}{"companyName": "Acme Corp"}
 	update := map[string]interface{}{"status": "Interview!"}
 
@@ -157,7 +157,7 @@ func TestPatch(t *testing.T) {
 func TestDelete(t *testing.T) {
 	server := mockAppsScript(t, nil)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	matchBy := map[string]interface{}{"companyName": "Acme Corp"}
 
 	result, err := app.Delete(matchBy)
@@ -188,7 +188,7 @@ func TestPostFollowRedirect_Non302(t *testing.T) {
 	}))
 	t.Cleanup(server.Close)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	_, err := app.Create(map[string]interface{}{"companyName": "Test"})
 	if err == nil {
 		t.Fatal("expected error for non-302 response, got nil")
@@ -204,7 +204,7 @@ func TestPostFollowRedirect_NoLocationHeader(t *testing.T) {
 	}))
 	t.Cleanup(server.Close)
 
-	app := NewAppScriptWithURL(server.URL + "/exec")
+	app := &AppScript{URL: server.URL + "/exec"}
 	_, err := app.Create(map[string]interface{}{"companyName": "Test"})
 	if err == nil {
 		t.Fatal("expected error for missing Location header, got nil")

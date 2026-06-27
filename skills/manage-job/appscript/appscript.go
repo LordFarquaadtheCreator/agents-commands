@@ -14,15 +14,11 @@ import (
 // Commands call methods on this struct — they don't deal with URLs,
 // redirects, or payload construction directly.
 type AppScript struct {
-	url string
+	URL string
 }
 
 func NewAppScript() *AppScript {
-	return &AppScript{url: loadScriptURL()}
-}
-
-func NewAppScriptWithURL(u string) *AppScript {
-	return &AppScript{url: u}
+	return &AppScript{URL: loadScriptURL()}
 }
 
 // postFollowRedirect handles Apps Script's 302 redirect on POST.
@@ -36,7 +32,7 @@ func (a *AppScript) postFollowRedirect(body []byte) (string, error) {
 		Timeout: 30 * time.Second,
 	}
 
-	req, err := http.NewRequest("POST", a.url, bytes.NewReader(body))
+	req, err := http.NewRequest("POST", a.URL, bytes.NewReader(body))
 	if err != nil {
 		return "", err
 	}
@@ -73,7 +69,7 @@ func (a *AppScript) postFollowRedirect(body []byte) (string, error) {
 }
 
 func (a *AppScript) Get(params url.Values) (string, error) {
-	target := a.url
+	target := a.URL
 	if len(params) > 0 {
 		target = target + "?" + params.Encode()
 	}
