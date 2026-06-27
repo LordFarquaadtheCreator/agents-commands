@@ -4,7 +4,9 @@
 
 set -euo pipefail
 
-BASE_URL="${1:-https://script.google.com/macros/s/AKfycbwRQ52XCi5htaaHLO1Laizu8-pyYFKI0GEWELSnJHsP1CBDc-9OxNlkWGhlG-8l8tDxIQ/exec}"
+_REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEPLOYMENT_ID=$(python3 -c "import json; print(json.load(open('$_REPO_ROOT/sheets-deployment.json'))['deploymentId'])")
+BASE_URL="${1:-https://script.google.com/macros/s/${DEPLOYMENT_ID}/exec}"
 TEST_COMPANY="__TEST_CORP_$(date +%s)__"
 PASS=0
 FAIL=0

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import re
 import sys
 import urllib.error
@@ -16,7 +17,11 @@ VALID_STATUSES = {
     "Interview!",
     "Done",
 }
-SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRQ52XCi5htaaHLO1Laizu8-pyYFKI0GEWELSnJHsP1CBDc-9OxNlkWGhlG-8l8tDxIQ/exec"
+
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+with open(os.path.join(_REPO_ROOT, "sheets-deployment.json")) as f:
+    _config = json.load(f)
+SCRIPT_URL = f"https://script.google.com/macros/s/{_config['deploymentId']}/exec"
 
 
 # Validation
