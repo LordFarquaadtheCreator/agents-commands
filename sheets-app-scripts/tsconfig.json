@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "lib": ["ES2019"],
+    "outDir": ".",
+    "strict": true,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "allowJs": false
+  },
+  "include": ["update-beggers-sheet.ts"],
+  "exclude": ["update-beggers-sheet.js"]
+}
