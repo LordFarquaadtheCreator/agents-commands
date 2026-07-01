@@ -1,15 +1,14 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	"set-gh-token/pats"
+	"set-gh/pats"
 
-	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/spf13/cobra"
 )
 
 var mcpConfigPath = filepath.Join(os.Getenv("HOME"), ".codeium", "windsurf", "mcp_config.json")
@@ -29,49 +28,48 @@ type McpServer struct {
 	DisabledTools []string          `json:"disabledTools,omitempty"`
 }
 
-type McpInput struct {
-	Mode string `json:"mode" jsonschema:"required,description=Either work or personal"`
+var mcpCmd = &cobra.Command{
+	Use:   "mcp",
+	Short: "Swap GitHub MCP token in mcp_config.json",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		mode := args[0]
+		token, err := pats.LoadToken(mode)
+		if err != nil {
+			return err
+		}
+
+		data, err := os.ReadFile(mcpConfigPath)
+		if err != nil {
+			return fmt.Errorf("MCP config not found: %s", mcpConfigPath)
+		}
+
+		var config McpConfig
+		if err := json.Unmarshal(data, &config); err != nil {
+			return fmt.Errorf("invalid JSON in MCP config: %v", err)
+		}
+
+		github := config.McpServers["github"]
+		github.ServerUrl = "https://api.githubcopilot.com/mcp/"
+		github.Headers = map[string]string{}
+
+		github.Headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
+		config.McpServers["github"] = github
+
+		output, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to marshal config: %v", err)
+		}
+
+		if err := os.WriteFile(mcpConfigPath, output, 0644); err != nil {
+			return fmt.Errorf("cannot write to %s", mcpConfigPath)
+		}
+
+		fmt.Printf("Successfully updated GitHub MCP token to %s\n", mode)
+		return nil
+	},
 }
 
-type McpOutput struct {
-	Message string `json:"message"`
-}
-
-func SwapMcpToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolParamsFor[McpInput]) (*mcp.CallToolResultFor[McpOutput], error) {
-	token, err := pats.LoadToken(req.Arguments.Mode)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := os.ReadFile(mcpConfigPath)
-	if err != nil {
-		return nil, fmt.Errorf("MCP config not found: %s", mcpConfigPath)
-	}
-
-	var config McpConfig
-	if err := json.Unmarshal(data, &config); err != nil {
-		return nil, fmt.Errorf("invalid JSON in MCP config: %v", err)
-	}
-
-	github := config.McpServers["github"]
-	github.ServerUrl = "https://api.githubcopilot.com/mcp/"
-	github.Headers = map[string]string{}
-
-	github.Headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
-	config.McpServers["github"] = github
-
-	output, err := json.MarshalIndent(config, "", "  ")
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal config: %v", err)
-	}
-
-	if err := os.WriteFile(mcpConfigPath, output, 0644); err != nil {
-		return nil, fmt.Errorf("cannot write to %s", mcpConfigPath)
-	}
-
-	msg := fmt.Sprintf("Successfully updated GitHub token to %s", req.Arguments.Mode)
-	return &mcp.CallToolResultFor[McpOutput]{
-		Content:           []mcp.Content{&mcp.TextContent{Text: msg}},
-		StructuredContent: McpOutput{Message: msg},
-	}, nil
+func init() {
+	RootCmd.AddCommand(mcpCmd)
 }

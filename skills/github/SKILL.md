@@ -3,18 +3,32 @@ name: github
 description: you must use this skill before performing an action related to git and github
 ---
 
+# What is this skill?
+This skill provides a local CLI to manage the `<mode>` of the github related tools the user has. It also provides you with the two methods of github related tools you can use. 
+The user has two modes of github, `personal` and `work`. This skill ensures you're setting the tokens correctly such that there is no confusion when you are working on a project. Failure to use this skill results in confusion and unneeded token spendage. 
+
+# Step 1: Determine `<mode>`
 If the repository that you are in is `tobi-*`, then `<mode>` is `work`
-Otherwise, `<mode>` is `personal`
+Otherwise, `<mode>` is `personal`.
 
-# Github MCP
-You **must** use github mcp for all tasks.
+# Step 2: Set tokens
+Run these two commands. Do not explore, list MCP tools, or read source code. Just run them.
 
-Before using the github mcp, you must call the `set-gh-mcp-token` tool from the `set-gh-token` MCP server with the current `<mode>` as the `mode` argument. If the tool call fails, you cannot use github and must inform the user. Try `gh` command as a backup, see below.
+```bash
+~/agents-skills/skills/github/set-gh mcp <mode>
+~/agents-skills/skills/github/set-gh cli <mode>
+```
 
-# `GH` CLI
-If the github mcp is inadequate, then you are allowed to use `gh` - github cli tool. Use this with caution.
+`<mode>` is a positional argument. Not a flag. Examples:
+- `~/agents-skills/skills/github/set-gh mcp work`
+- `~/agents-skills/skills/github/set-gh cli personal`
 
-The `gh` CLI is a separate tool. Before using `gh`, you must call the `set-gh-cli-token` tool from the `set-gh-token` MCP server with the current `<mode>` as the `mode` argument. If the tool call fails, you cannot use `gh` and must inform the user.
+If either command fails, inform the user. Do not attempt to debug.
+
+# Step 3: Use github
+You must use github mcp for all tasks. If the github mcp is inadequate, you may use `gh` CLI as a backup.
+
+Do not list available MCP tools. You know what they are. Just use them.
 
 # whoami
 If `<mode>` is `work`, then your username is `fahadattobi` otherwise it is `LordFarquaadtheCreator`

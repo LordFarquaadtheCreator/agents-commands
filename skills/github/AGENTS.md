@@ -1,18 +1,19 @@
-# Agent Instructions — set-gh-token
+# Agent Instructions — set-gh
 
 ## Structure
 
 ```
 github/
-├── main.go              # MCP server setup, stdio transport
-├── cmd/                 # MCP tool handlers
-│   ├── cli.go           # SwapCliToken — swaps gh CLI token, captures stderr
-│   └── mcp.go           # SwapMcpToken — swaps MCP token via typed McpConfig struct
+├── main.go              # entrypoint, calls cobra Execute
+├── cmd/                 # cobra subcommands
+│   ├── root.go          # root cobra command
+│   ├── cli.go           # cli subcommand — swaps gh CLI token, captures stderr
+│   └── mcp.go           # mcp subcommand — swaps MCP token via typed McpConfig struct
 ├── pats/                # Shared package
 │   └── pats.go          # LoadToken(mode) — reads gh-pats.yaml, mode is work|personal
 ├── go.mod
 ├── go.sum
-└── set-gh-token         # compiled binary (gitignored)
+└── set-gh               # compiled binary (gitignored)
 ```
 
 ## Config
@@ -28,12 +29,12 @@ MCP config at `~/.codeium/windsurf/mcp_config.json`.
 ## Rebuilding
 
 ```bash
-cd /Users/farquaad/agents-skills/skills/github && go build -o set-gh-token .
+cd /Users/farquaad/agents-skills/skills/github && go build -o set-gh .
 ```
 
-## MCP Server
+## CLI
 
-The binary runs as an MCP server over stdio. It exposes two tools:
+The binary is a cobra CLI with two subcommands:
 
-- `set-gh-mcp-token` — swaps GitHub PAT in mcp_config.json. Args: `mode` (work|personal)
-- `set-gh-cli-token` — swaps gh CLI token via `gh auth login --with-token`. Args: `mode` (work|personal)
+- `set-gh mcp <mode>` — swaps GitHub PAT in mcp_config.json. `mode` is work|personal
+- `set-gh cli <mode>` — swaps gh CLI token via `gh auth login --with-token`. `mode` is work|personal
