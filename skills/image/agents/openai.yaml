@@ -1,0 +1,4 @@
+interface:
+  display_name: "Image"
+  short_description: "Tools to understand why a user has provided an image."
+  default_prompt: "See screenshot"

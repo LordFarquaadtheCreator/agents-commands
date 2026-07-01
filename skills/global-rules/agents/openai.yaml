@@ -1,0 +1,4 @@
+interface:
+  display_name: "Global Rules"
+  short_description: "manditory rules to read before responding to the user"
+  default_prompt: "manditory rules to read before responding to the user"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vibe"
+  short_description: "Clarify vague requests into concrete work"
+  default_prompt: "Interpret this vague request and turn it into concrete next steps."

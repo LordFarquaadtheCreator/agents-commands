@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workshop"
+  short_description: "Workshop technical ideas through structured questions"
+  default_prompt: "Workshop this technical idea with me."

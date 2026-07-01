@@ -4,3 +4,5 @@ config/
 .cursor/
 .claude/
 .DS_Store
+
+skills/*.private
