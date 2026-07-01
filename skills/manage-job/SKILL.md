@@ -14,7 +14,7 @@ This skill manages job applications via the Google Sheets backend — create, re
 The compiled binary lives at:
 
 ```
-/Users/farquaad/agents-data/skills/manage-job/manage-job
+/Users/farquaad/agents-skills/skills/manage-job/manage-job
 ```
 
 All interaction is via stdio. The binary prints results to stdout and errors to stderr. Exit code 0 means success, exit code 1 means failure. If the command fails, you must stop and tell the user that the command failed.
@@ -26,7 +26,7 @@ All interaction is via stdio. The binary prints results to stdout and errors to 
 Use this immediately after applying to any job. Creates a new row in the spreadsheet with today's date.
 
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job track <companyName> <link> <industry> <status> [email] [phone] [notes]
+/Users/farquaad/agents-skills/skills/manage-job/manage-job track <companyName> <link> <industry> <status> [email] [phone] [notes]
 ```
 
 #### Required parameters (in order)
@@ -62,22 +62,22 @@ Optional parameters can be omitted entirely. You cannot skip an optional paramet
 
 *No optional parameters:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started"
+/Users/farquaad/agents-skills/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started"
 ```
 
 *With email:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com"
+/Users/farquaad/agents-skills/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com"
 ```
 
 *With email and phone:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234"
+/Users/farquaad/agents-skills/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234"
 ```
 
 *All parameters:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234" "They said to email \"John\" at \"john@company.com\""
+/Users/farquaad/agents-skills/skills/manage-job/manage-job track "Acme Corp" "https://fakejobs.com/quantum-ai-analyst" "Tech" "Not Started" "email@email.com" "917-999-1234" "They said to email \"John\" at \"john@company.com\""
 ```
 
 #### Output
@@ -94,7 +94,7 @@ On failure, prints error to stderr and exits with code 1.
 Fetches all job applications from the spreadsheet. Returns JSON to stdout.
 
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job get
+/Users/farquaad/agents-skills/skills/manage-job/manage-job get
 ```
 
 #### Optional query parameters
@@ -102,7 +102,7 @@ Fetches all job applications from the spreadsheet. Returns JSON to stdout.
 You can pass key-value pairs as arguments to filter:
 
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job get page 1 pageSize 10 search "Acme" industry "Tech" status "Applied Only" order "desc"
+/Users/farquaad/agents-skills/skills/manage-job/manage-job get page 1 pageSize 10 search "Acme" industry "Tech" status "Applied Only" order "desc"
 ```
 
 Supported keys:
@@ -143,7 +143,7 @@ Prints JSON to stdout:
 Updates fields on an existing row. Uses `--matchBy` to find the row and `--update` to specify which fields to change.
 
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job patch --matchBy '<json>' --update '<json>'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job patch --matchBy '<json>' --update '<json>'
 ```
 
 #### Flags
@@ -155,12 +155,12 @@ Updates fields on an existing row. Uses `--matchBy` to find the row and `--updat
 
 *Change status:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job patch --matchBy '{"companyName":"Acme Corp"}' --update '{"status":"Interview!"}'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job patch --matchBy '{"companyName":"Acme Corp"}' --update '{"status":"Interview!"}'
 ```
 
 *Update multiple fields:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job patch --matchBy '{"companyName":"Acme Corp","link":"https://example.com"}' --update '{"status":"Didn't Get It","notes":"Rejected"}'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job patch --matchBy '{"companyName":"Acme Corp","link":"https://example.com"}' --update '{"status":"Didn't Get It","notes":"Rejected"}'
 ```
 
 #### Output
@@ -177,7 +177,7 @@ On failure, prints error to stderr and exits with code 1.
 Deletes a row from the spreadsheet. Uses `--matchBy` to find the row.
 
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job delete --matchBy '<json>'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job delete --matchBy '<json>'
 ```
 
 #### Flags
@@ -188,12 +188,12 @@ Deletes a row from the spreadsheet. Uses `--matchBy` to find the row.
 
 *Delete by company name:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job delete --matchBy '{"companyName":"Acme Corp"}'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job delete --matchBy '{"companyName":"Acme Corp"}'
 ```
 
 *Delete by multiple fields for precision:*
 ```bash
-/Users/farquaad/agents-data/skills/manage-job/manage-job delete --matchBy '{"companyName":"Acme Corp","link":"https://example.com"}'
+/Users/farquaad/agents-skills/skills/manage-job/manage-job delete --matchBy '{"companyName":"Acme Corp","link":"https://example.com"}'
 ```
 
 #### Output
@@ -220,5 +220,5 @@ The deployment ID is the hash in the Apps Script web app URL: `https://script.go
 If you modify `main.go`, recompile:
 
 ```bash
-cd /Users/farquaad/agents-data/skills/manage-job && go build -o manage-job main.go
+cd /Users/farquaad/agents-skills/skills/manage-job && go build -o manage-job main.go
 ```

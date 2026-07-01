@@ -1,4 +1,4 @@
-# agents-data
+# agents-skills
 
 Canonical skill bank for Zed agent skills. Each skill in `skills/` is the source of truth.
 

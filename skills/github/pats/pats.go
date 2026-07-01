@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var patsPath = filepath.Join(os.Getenv("HOME"), "agents-data", "config", "gh-pats.yaml")
+var patsPath = filepath.Join(os.Getenv("HOME"), "agents-skills", "config", "gh-pats.yaml")
 
 func modeToKey(mode string) (string, error) {
 	switch mode {

@@ -39,7 +39,7 @@ File must exist at `config/sheets-deployment.yaml`. Directory `config/` is gitig
 ## Rebuilding
 
 ```bash
-cd /Users/farquaad/agents-data/skills/manage-job && go build -o manage-job .
+cd /Users/farquaad/agents-skills/skills/manage-job && go build -o manage-job .
 ```
 
 The binary should not be committed to the repo.
@@ -48,5 +48,5 @@ The binary should not be committed to the repo.
 
 Make sure to check for regression by running tests. 
 ```bash
-cd /Users/farquaad/agents-data/skills/manage-job && go test ./appscript/ -v
+cd /Users/farquaad/agents-skills/skills/manage-job && go test ./appscript/ -v
 ```

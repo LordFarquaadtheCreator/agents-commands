@@ -17,7 +17,7 @@ github/
 
 ## Config
 
-PATs file at `~/agents-data/config/gh-pats.yaml`:
+PATs file at `~/agents-skills/config/gh-pats.yaml`:
 ```yaml
 work_PAT: "..."
 personal_PAT: "..."
@@ -28,7 +28,7 @@ MCP config at `~/.codeium/windsurf/mcp_config.json`.
 ## Rebuilding
 
 ```bash
-cd /Users/farquaad/agents-data/skills/github && go build -o set-gh-token .
+cd /Users/farquaad/agents-skills/skills/github && go build -o set-gh-token .
 ```
 
 ## Usage
