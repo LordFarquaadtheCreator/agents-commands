@@ -1,0 +1,9 @@
+{
+  "queue_processor": {
+    "command": "docker",
+    "args": ["run", "--rm", "-i", "-e", "COMFYUI_API_URL", "queue_processor"],
+    "env": {
+      "COMFYUI_API_URL": "YOUR_MODAL_COMFYUI_API_URL"
+    }
+  }
+}
