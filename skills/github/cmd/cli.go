@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -13,7 +13,7 @@ import (
 )
 
 type CliInput struct {
-	Mode string `json:"mode" jsonschema:"required,description=Either work_mode or personal_mode"`
+	Mode string `json:"mode" jsonschema:"required,description=Either work or personal"`
 }
 
 type CliOutput struct {
@@ -28,16 +28,19 @@ func SwapCliToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolP
 
 	ghCmd := exec.Command("gh", "auth", "login", "--with-token")
 	ghCmd.Stdin = strings.NewReader(token)
-	ghCmd.Stdout = os.Stdout
-	ghCmd.Stderr = os.Stderr
+	var stderr bytes.Buffer
+	ghCmd.Stderr = &stderr
 
 	if err := ghCmd.Run(); err != nil {
-		return nil, fmt.Errorf("gh auth login failed: %v", err)
+		return nil, fmt.Errorf("gh auth login failed: %v: %s", err, strings.TrimSpace(stderr.String()))
+	}
+	if stderr.Len() > 0 {
+		return nil, fmt.Errorf("gh auth login failed: %s", strings.TrimSpace(stderr.String()))
 	}
 
 	msg := fmt.Sprintf("Successfully updated gh CLI token to %s", req.Arguments.Mode)
 	return &mcp.CallToolResultFor[CliOutput]{
-		Content: []mcp.Content{&mcp.TextContent{Text: msg}},
+		Content:           []mcp.Content{&mcp.TextContent{Text: msg}},
 		StructuredContent: CliOutput{Message: msg},
 	}, nil
 }

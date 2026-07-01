@@ -12,12 +12,12 @@ var patsPath = filepath.Join(os.Getenv("HOME"), "agents-skills", "config", "gh-p
 
 func modeToKey(mode string) (string, error) {
 	switch mode {
-	case "work_mode":
+	case "work":
 		return "work_PAT", nil
-	case "personal_mode":
+	case "personal":
 		return "personal_PAT", nil
 	default:
-		return "", fmt.Errorf("invalid mode: %s. Must be 'work_mode' or 'personal_mode'", mode)
+		return "", fmt.Errorf("invalid mode: %s. Must be 'work' or 'personal'", mode)
 	}
 }
 

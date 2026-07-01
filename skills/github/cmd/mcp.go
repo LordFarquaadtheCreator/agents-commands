@@ -14,8 +14,23 @@ import (
 
 var mcpConfigPath = filepath.Join(os.Getenv("HOME"), ".codeium", "windsurf", "mcp_config.json")
 
+type McpConfig struct {
+	McpServers map[string]McpServer `json:"mcpServers"`
+}
+
+type McpServer struct {
+	Disabled      bool              `json:"disabled"`
+	ServerUrl     string            `json:"serverUrl,omitempty"`
+	Url           string            `json:"url,omitempty"`
+	Command       string            `json:"command,omitempty"`
+	Args          []string          `json:"args,omitempty"`
+	Headers       map[string]string `json:"headers,omitempty"`
+	Env           map[string]string `json:"env,omitempty"`
+	DisabledTools []string          `json:"disabledTools,omitempty"`
+}
+
 type McpInput struct {
-	Mode string `json:"mode" jsonschema:"required,description=Either work_mode or personal_mode"`
+	Mode string `json:"mode" jsonschema:"required,description=Either work or personal"`
 }
 
 type McpOutput struct {
@@ -33,27 +48,17 @@ func SwapMcpToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolP
 		return nil, fmt.Errorf("MCP config not found: %s", mcpConfigPath)
 	}
 
-	var config map[string]interface{}
+	var config McpConfig
 	if err := json.Unmarshal(data, &config); err != nil {
 		return nil, fmt.Errorf("invalid JSON in MCP config: %v", err)
 	}
 
-	mcpServers, ok := config["mcpServers"].(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("required key missing in config: mcpServers")
-	}
+	github := config.McpServers["github"]
+	github.ServerUrl = "https://api.githubcopilot.com/mcp/"
+	github.Headers = map[string]string{}
 
-	githubEntry, ok := mcpServers["github"].(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("required key missing in config: mcpServers.github")
-	}
-
-	headers, ok := githubEntry["headers"].(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("required key missing in config: mcpServers.github.headers")
-	}
-
-	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
+	github.Headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
+	config.McpServers["github"] = github
 
 	output, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
@@ -66,7 +71,7 @@ func SwapMcpToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolP
 
 	msg := fmt.Sprintf("Successfully updated GitHub token to %s", req.Arguments.Mode)
 	return &mcp.CallToolResultFor[McpOutput]{
-		Content: []mcp.Content{&mcp.TextContent{Text: msg}},
+		Content:           []mcp.Content{&mcp.TextContent{Text: msg}},
 		StructuredContent: McpOutput{Message: msg},
 	}, nil
 }
