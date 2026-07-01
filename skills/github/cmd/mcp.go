@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -8,68 +9,64 @@ import (
 
 	"set-gh-token/pats"
 
-	"github.com/spf13/cobra"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 var mcpConfigPath = filepath.Join(os.Getenv("HOME"), ".codeium", "windsurf", "mcp_config.json")
 
-var McpCmd = &cobra.Command{
-	Use:   "mcp <work_mode|personal_mode>",
-	Short: "Swap GitHub MCP token in mcp_config.json",
-	Long:  "Swap GitHub PAT in mcp_config.json based on mode.",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		mode := args[0]
+type McpInput struct {
+	Mode string `json:"mode" jsonschema:"required,description=Either work_mode or personal_mode"`
+}
 
-		token, err := pats.LoadToken(mode)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
-		}
+type McpOutput struct {
+	Message string `json:"message"`
+}
 
-		data, err := os.ReadFile(mcpConfigPath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: MCP config not found: %s\n", mcpConfigPath)
-			os.Exit(1)
-		}
+func SwapMcpToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolParamsFor[McpInput]) (*mcp.CallToolResultFor[McpOutput], error) {
+	token, err := pats.LoadToken(req.Arguments.Mode)
+	if err != nil {
+		return nil, err
+	}
 
-		var config map[string]interface{}
-		if err := json.Unmarshal(data, &config); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: invalid JSON in MCP config: %v\n", err)
-			os.Exit(1)
-		}
+	data, err := os.ReadFile(mcpConfigPath)
+	if err != nil {
+		return nil, fmt.Errorf("MCP config not found: %s", mcpConfigPath)
+	}
 
-		mcpServers, ok := config["mcpServers"].(map[string]interface{})
-		if !ok {
-			fmt.Fprintln(os.Stderr, "Error: required key missing in config: mcpServers")
-			os.Exit(1)
-		}
+	var config map[string]interface{}
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, fmt.Errorf("invalid JSON in MCP config: %v", err)
+	}
 
-		githubEntry, ok := mcpServers["github"].(map[string]interface{})
-		if !ok {
-			fmt.Fprintln(os.Stderr, "Error: required key missing in config: mcpServers.github")
-			os.Exit(1)
-		}
+	mcpServers, ok := config["mcpServers"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("required key missing in config: mcpServers")
+	}
 
-		headers, ok := githubEntry["headers"].(map[string]interface{})
-		if !ok {
-			fmt.Fprintln(os.Stderr, "Error: required key missing in config: mcpServers.github.headers")
-			os.Exit(1)
-		}
+	githubEntry, ok := mcpServers["github"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("required key missing in config: mcpServers.github")
+	}
 
-		headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
+	headers, ok := githubEntry["headers"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("required key missing in config: mcpServers.github.headers")
+	}
 
-		output, err := json.MarshalIndent(config, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: failed to marshal config: %v\n", err)
-			os.Exit(1)
-		}
+	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
 
-		if err := os.WriteFile(mcpConfigPath, output, 0644); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: cannot write to %s\n", mcpConfigPath)
-			os.Exit(1)
-		}
+	output, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal config: %v", err)
+	}
 
-		fmt.Printf("Successfully updated GitHub token to %s\n", mode)
-	},
+	if err := os.WriteFile(mcpConfigPath, output, 0644); err != nil {
+		return nil, fmt.Errorf("cannot write to %s", mcpConfigPath)
+	}
+
+	msg := fmt.Sprintf("Successfully updated GitHub token to %s", req.Arguments.Mode)
+	return &mcp.CallToolResultFor[McpOutput]{
+		Content: []mcp.Content{&mcp.TextContent{Text: msg}},
+		StructuredContent: McpOutput{Message: msg},
+	}, nil
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,33 +9,35 @@ import (
 
 	"set-gh-token/pats"
 
-	"github.com/spf13/cobra"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-var CliCmd = &cobra.Command{
-	Use:   "cli <work_mode|personal_mode>",
-	Short: "Swap GitHub CLI token",
-	Long:  "Swap GitHub CLI token using gh auth login --with-token based on mode.",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		mode := args[0]
+type CliInput struct {
+	Mode string `json:"mode" jsonschema:"required,description=Either work_mode or personal_mode"`
+}
 
-		token, err := pats.LoadToken(mode)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
-		}
+type CliOutput struct {
+	Message string `json:"message"`
+}
 
-		ghCmd := exec.Command("gh", "auth", "login", "--with-token")
-		ghCmd.Stdin = strings.NewReader(token)
-		ghCmd.Stdout = os.Stdout
-		ghCmd.Stderr = os.Stderr
+func SwapCliToken(ctx context.Context, ss *mcp.ServerSession, req *mcp.CallToolParamsFor[CliInput]) (*mcp.CallToolResultFor[CliOutput], error) {
+	token, err := pats.LoadToken(req.Arguments.Mode)
+	if err != nil {
+		return nil, err
+	}
 
-		if err := ghCmd.Run(); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: gh auth login failed: %v\n", err)
-			os.Exit(1)
-		}
+	ghCmd := exec.Command("gh", "auth", "login", "--with-token")
+	ghCmd.Stdin = strings.NewReader(token)
+	ghCmd.Stdout = os.Stdout
+	ghCmd.Stderr = os.Stderr
 
-		fmt.Printf("Successfully updated gh CLI token to %s\n", mode)
-	},
+	if err := ghCmd.Run(); err != nil {
+		return nil, fmt.Errorf("gh auth login failed: %v", err)
+	}
+
+	msg := fmt.Sprintf("Successfully updated gh CLI token to %s", req.Arguments.Mode)
+	return &mcp.CallToolResultFor[CliOutput]{
+		Content: []mcp.Content{&mcp.TextContent{Text: msg}},
+		StructuredContent: CliOutput{Message: msg},
+	}, nil
 }

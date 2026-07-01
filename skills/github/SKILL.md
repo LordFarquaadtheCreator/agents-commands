@@ -12,20 +12,12 @@ If you are in `work_mode`, environment is `work_mode`. Otherwise, environment is
 # Github MCP
 You **must** use github mcp for all tasks.
 
-Each use of the github mcp requires that you run the following command. If the command fails, you cannot use github and must inform the user. Try `gh` command as a backup, see below. 
-
-```zsh
-/Users/farquaad/agents-skills/skills/github/set-gh-token mcp <environment>
-```
+Before using the github mcp, you must call the `set-gh-mcp-token` tool from the `set-gh-token` MCP server with the current `<environment>` as the `mode` argument. If the tool call fails, you cannot use github and must inform the user. Try `gh` command as a backup, see below.
 
 # `GH` CLI
 If the github mcp is inadequate, then you are allowed to use `gh` - github cli tool. Use this with caution.
 
-The `gh` CLI is a separate tool. Each use of `gh` requires that you run the following command. If the command fails, you cannot use `gh` and must inform the user.
-
-```zsh
-/Users/farquaad/agents-skills/skills/github/set-gh-token cli <environment>
-```
+The `gh` CLI is a separate tool. Before using `gh`, you must call the `set-gh-cli-token` tool from the `set-gh-token` MCP server with the current `<environment>` as the `mode` argument. If the tool call fails, you cannot use `gh` and must inform the user.
 
 # whoami
 If you are in `work_mode`, then your username is `fahadattobi` otherwise it is `LordFarquaadtheCreator`

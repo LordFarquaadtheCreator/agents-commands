@@ -1,21 +1,28 @@
 package main
 
 import (
-	"os"
+	"context"
+	"log"
 
-	"github.com/spf13/cobra"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"set-gh-token/cmd"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "set-gh-token",
-	Short: "Swap GitHub tokens between work and personal modes",
-}
-
 func main() {
-	rootCmd.AddCommand(cmd.McpCmd, cmd.CliCmd)
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+	server := mcp.NewServer(&mcp.Implementation{Name: "set-gh-token", Version: "v1.0.0"}, nil)
+
+	mcp.AddTool(server, &mcp.Tool{
+		Name:        "set-gh-mcp-token",
+		Description: "Swap GitHub MCP token in mcp_config.json based on mode (work_mode or personal_mode)",
+	}, cmd.SwapMcpToken)
+
+	mcp.AddTool(server, &mcp.Tool{
+		Name:        "set-gh-cli-token",
+		Description: "Swap GitHub CLI token using gh auth login --with-token based on mode (work_mode or personal_mode)",
+	}, cmd.SwapCliToken)
+
+	if err := server.Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+		log.Fatal(err)
 	}
 }
