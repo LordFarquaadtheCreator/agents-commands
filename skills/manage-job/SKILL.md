@@ -222,3 +222,14 @@ If you modify `main.go`, recompile:
 ```bash
 cd /Users/farquaad/agents-skills/skills/manage-job && go build -o manage-job main.go
 ```
+
+## Apps Script Backend
+
+The Google Apps Script source lives in `apps-script/` within this skill directory. The Go binary is a client — the actual CRUD logic runs on Google's servers via the deployed Apps Script web app.
+
+- **Source of truth:** `apps-script/update-beggers-sheet.ts`
+- **Compiled output:** `apps-script/update-beggers-sheet.js` (deploy this to Apps Script)
+- **Compile:** `cd apps-script && tsgo --project tsconfig.json`
+- **E2E tests:** `cd apps-script && ./test.sh [URL]`
+
+See `apps-script/AGENTS.md` for the full API shape and deployment instructions.

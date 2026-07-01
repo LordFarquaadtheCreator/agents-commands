@@ -5,17 +5,23 @@
 ```
 manage-job/
 ├── main.go              # rootCmd + main(), flag registration
-├── appscript/           # API client package (see appscript/AGENT.md)
+├── appscript/           # Go API client package (see appscript/AGENTS.md)
 │   ├── appscript.go     # AppScript struct: Get, Create, Patch, Delete
 │   ├── utils.go         # config loading, repoRoot, sheetsConfig
 │   └── appscript_test.go
-├── cmd/                 # Cobra commands (see cmd/AGENT.md)
+├── apps-script/         # Google Apps Script backend (see apps-script/AGENTS.md)
+│   ├── update-beggers-sheet.ts  # source of truth
+│   ├── update-beggers-sheet.js  # compiled output — deploy this to Apps Script
+│   ├── tsconfig.json
+│   ├── test.sh          # e2e tests against deployed endpoint
+│   └── AGENTS.md
+├── cmd/                 # Cobra commands (see cmd/AGENTS.md)
 │   ├── get.go           # GetCmd
 │   ├── track.go         # TrackCmd
 │   ├── patch.go         # PatchCmd
 │   └── delete.go        # DeleteCmd
 ├── go.mod
-└── manage-job           # compiled binary (committed)
+└── manage-job           # compiled binary (gitignored)
 ```
 
 ## Deployment ID → URL

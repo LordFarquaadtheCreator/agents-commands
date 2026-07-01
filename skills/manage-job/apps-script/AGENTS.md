@@ -1,4 +1,6 @@
-# Agent Instructions — sheets-app-scripts
+# Agent Instructions — apps-script
+
+Google Apps Script backend for manage-job. Runs as a web app deployed from `update-beggers-sheet.js`. The Go binary in the parent directory calls this endpoint.
 
 ## Compile TS to JS before pushing
 
